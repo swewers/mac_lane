@@ -195,7 +195,7 @@ class InductiveValuation(DevelopingValuation):
         # - we may lift h to arbitrary precision
         # - we can add anything which times e0 has positive valuation, e.g., we
         # may drop coefficients of positive valuation
-        h = h.map_coefficients(lambda c:_lift_to_maximal_precision(c))
+        h = h.map_coefficients(_lift_to_maximal_precision)
 
         return h
 
@@ -1031,8 +1031,8 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
 
         if phi_divides:
             from sage.rings.all import PolynomialRing
-            R = PolynomialRing(f.parent(), 'phi')
-            f = R(coefficients[phi_divides:])(self.phi())
+            S = PolynomialRing(f.parent(), 'phi')
+            f = S(coefficients[phi_divides:])(self.phi())
         valuations = [v-self.mu()*phi_divides for v in valuations[phi_divides:]]
         coefficients = coefficients[phi_divides:]
         valuation = min(valuations)
@@ -1144,7 +1144,7 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
             ((1 + O(2^10))*x + 1 + O(2^10))^2
 
         A polynomial that is an equivalence unit, is returned as the unit part
-        of a :class:`sage.structure.factorization.Factorization`, leading to a unit
+        of a :class:`sage.structure.factorization.Factorization`, leading to a unit of
         non-minimal degree::
 
             sage: w = v.augmentation(x, 1)
@@ -1182,7 +1182,7 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
             sage: K1.<pi>=NumberField(x^3 - 2)
             sage: K.<alpha>=K1.galois_closure()
             sage: R.<x>=K[]
-            sage: vp = Q.valuation(2)
+            sage: vp = QQ.valuation(2)
             sage: vp = vp.extension(K)
             sage: v0 = GaussValuation(R, vp)
             sage: G=x^36 + 36*x^35 + 630*x^34 + 7144*x^33 + 59055*x^32 + 379688*x^31 +1978792*x^30 + 8604440*x^29 + 31895428*x^28 + 102487784*x^27 + 289310720*x^26 + 725361352*x^25 + 1629938380*x^24 + 3307417800*x^23 + 6098786184*x^22+10273444280*x^21 + 15878121214*x^20 + 22596599536*x^19 + 29695703772*x^18 +36117601976*x^17 + 40722105266*x^16 + 42608585080*x^15 + 41395961848*x^14 +37344435656*x^13 + 31267160756*x^12 + 24271543640*x^11 + 17439809008*x^10 + 11571651608*x^9 + 7066815164*x^8 + 3953912472*x^7 + 2013737432*x^6 + 925014888*x^5 + 378067657*x^4 + 134716588*x^3 + 40441790*x^2 + 9532544*x + 1584151
@@ -1315,7 +1315,7 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
             raise ValueError("equivalence units can not have a minimal representative")
 
         e = list(self.coefficients(f))[degree]
-        h = self.equivalence_reciprocal(e).map_coefficients(lambda c:_lift_to_maximal_precision(c))
+        h = self.equivalence_reciprocal(e).map_coefficients(_lift_to_maximal_precision)
         g = h*f
         vg = self(g)
 

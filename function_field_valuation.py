@@ -159,10 +159,10 @@ class FunctionFieldValuationFactory(UniqueFactory):
       isomorphisms to and from that function field
 
     EXAMPLES::
-    
+
         sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
         sage: K.<x> = FunctionField(QQ)
-    
+
     We create a valuation that correspond to a finite rational place of a function
     field::
 
@@ -177,9 +177,9 @@ class FunctionFieldValuationFactory(UniqueFactory):
 
         sage: v = FunctionFieldValuation(K, x - 1); v
         (x - 1)-adic valuation
-    
+
     Similarly, for a finite non-rational place::
-        
+
         sage: v = FunctionFieldValuation(K, x^2 + 1); v
         (x^2 + 1)-adic valuation
         sage: v(x^2 + 1)
@@ -188,24 +188,24 @@ class FunctionFieldValuationFactory(UniqueFactory):
         0
 
     Or for the infinite place::
-    
+
         sage: v = FunctionFieldValuation(K, 1/x); v
         Valuation at the infinite place
         sage: v(x)
         -1
-    
+
     Instead of specifying a generator of a place, we can define a valuation on a
     rational function field by giving a discrete valuation on the underlying
     polynomial ring::
-    
+
         sage: R.<x> = QQ[]
         sage: w = GaussValuation(R, TrivialValuation(QQ)).augmentation(x - 1, 1)
         sage: v = FunctionFieldValuation(K, w); v
         (x - 1)-adic valuation
-    
+
     Note that this allows us to specify valuations which do not correspond to a
     place of the function field::
-    
+
         sage: w = GaussValuation(R, pAdicValuation(QQ, 2))
         sage: v = FunctionFieldValuation(K, w); v
         2-adic valuation
@@ -280,7 +280,7 @@ class FunctionFieldValuationFactory(UniqueFactory):
 
         The normalization is, however, not smart enough, to unwrap
         substitutions that turn out to be trivial::
-        
+
             sage: w = GaussValuation(R, pAdicValuation(QQ, 2))
             sage: w = FunctionFieldValuation(K, w)
             sage: w is FunctionFieldValuation(K, (w, K.hom([~K.gen()]), K.hom([~K.gen()])))
@@ -719,7 +719,7 @@ class InducedFunctionFieldValuation_base(FunctionFieldValuation_base):
             sage: v = FunctionFieldValuation(K, x) # indirect doctest
             sage: isinstance(v, InducedFunctionFieldValuation_base)
             True
-            
+
         """
         FunctionFieldValuation_base.__init__(self, parent)
 
@@ -739,7 +739,7 @@ class InducedFunctionFieldValuation_base(FunctionFieldValuation_base):
             sage: K.<x> = FunctionField(QQ)
             sage: FunctionFieldValuation(K, x).uniformizer()
             x
-            
+
         """
         return self.domain()(self._base_valuation.uniformizer())
 
@@ -870,7 +870,7 @@ class InducedFunctionFieldValuation_base(FunctionFieldValuation_base):
             # comes from an extension of the field of constants
             # Condition "L.base() is L" is important so we do not call this
             # code for extensions from K(x) to K(x)(y)
-            
+
             # We extend the underlying valuation on the polynomial ring
             W = self._base_valuation.extensions(L._ring)
             return [FunctionFieldValuation(L, w) for w in W]
@@ -888,7 +888,7 @@ class InducedFunctionFieldValuation_base(FunctionFieldValuation_base):
             sage: v = FunctionFieldValuation(K, x) # indirect doctest
             sage: v((x+1)/x^2)
             -2
-            
+
         """
         return self._base_valuation(f.numerator()) - self._base_valuation(f.denominator())
 
@@ -914,9 +914,11 @@ class InducedFunctionFieldValuation_base(FunctionFieldValuation_base):
             sage: w = FunctionFieldValuation(K, vv)
             sage: w.residue_ring()
             Fraction Field of Univariate Polynomial Ring in x over Finite Field of size 2 (using NTL)
-            
+
         """
+        from sage.rings.function_field.constructor import FunctionField
         return self._base_valuation.residue_ring().fraction_field()
+
 
 
 class FiniteRationalFunctionFieldValuation(InducedFunctionFieldValuation_base, ClassicalFunctionFieldValuation_base, RationalFunctionFieldValuation_base):
@@ -951,13 +953,13 @@ class FiniteRationalFunctionFieldValuation(InducedFunctionFieldValuation_base, C
     def __init__(self, parent, base_valuation):
         r"""
         TESTS::
-    
+
             sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
             sage: K.<x> = FunctionField(QQ)
             sage: v = FunctionFieldValuation(K, x + 1)
             sage: isinstance(v, FiniteRationalFunctionFieldValuation)
             True
-    
+
         """
         InducedFunctionFieldValuation_base.__init__(self, parent, base_valuation)
         ClassicalFunctionFieldValuation_base.__init__(self, parent)
@@ -1082,7 +1084,7 @@ class FunctionFieldMappedValuation_base(FunctionFieldValuation_base, MappedValua
     isomorphic function field.
 
     EXAMPLES::
-    
+
         sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
         sage: K.<x> = FunctionField(GF(2))
         sage: v = FunctionFieldValuation(K, 1/x); v
@@ -1092,13 +1094,13 @@ class FunctionFieldMappedValuation_base(FunctionFieldValuation_base, MappedValua
     def __init__(self, parent, base_valuation, to_base_valuation_domain, from_base_valuation_domain):
         r"""
         TESTS::
-    
+
             sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
             sage: K.<x> = FunctionField(GF(2))
             sage: v = FunctionFieldValuation(K, 1/x)
             sage: isinstance(v, FunctionFieldMappedValuation_base)
             True
-    
+
         """
         FunctionFieldValuation_base.__init__(self, parent)
         MappedValuation_base.__init__(self, parent, base_valuation)

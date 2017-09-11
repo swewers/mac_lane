@@ -1251,7 +1251,7 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
         from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
         from sage.rings.function_field.constructor import FunctionField
         K = F.base_ring()
-        if hasattr(K, "base") and is_PolynomialRing(K.base()):
+        if hasattr(K, "base") and not hasattr(K, "modulus") and is_PolynomialRing(K.base()):
             K1 = FunctionField(K.base_ring(), K.variable_name())
             factors = F.change_ring(K1).factor()
             to_K = lambda c: K(c.numerator())/K(c.denominator())

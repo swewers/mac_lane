@@ -155,7 +155,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
     def _repr_(self):
         r"""
         Return a printable representation of this space.
-        
+
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
@@ -309,7 +309,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
                 sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
                 sage: pAdicValuation(QQ, 2).is_discrete_valuation()
                 True
-            
+
             """
 
         def is_negative_pseudo_valuation(self):
@@ -379,7 +379,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
                 Traceback (most recent call last):
                 ...
                 ValueError: Trivial valuations do not define a uniformizing element
-                
+
             """
 
         @cached_method
@@ -663,7 +663,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
                 sage: w = v.scale(3)
                 sage: w(3)
                 3
-        
+
             Scaling can also be done through multiplication with a scalar::
 
                 sage: w/3 == v
@@ -732,7 +732,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             for other in others + [self]:
                 if other.parent() is not self.parent():
                     raise ValueError("all valuations must be valuations on %r but %r is a valuation on %r"%(self.domain(), other, other.domain()))
-                if not other.is_discrete_valuation():
+                if not other.is_discrete_pseudo_valuation():
                     raise ValueError("all valuationss must be discrete valuations but %r is not"%(other,))
                 if other.is_trivial():
                     raise ValueError("all valuations must be non-trivial but %r is not"%(other,))
@@ -779,7 +779,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             valuation with respect to ``other``.
 
             .. NOTE::
-            
+
                 Overriding this method tends to be a nuissance as you need to
                 handle all possible types (as in Python type) of valuations.
                 This is essentially the same problem that you have when
@@ -826,7 +826,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             else:
                 # Since n,nn,d,dd are all non-negative this is essentially equivalent to
                 # a/b > d/n and b/a > nn/dd
-                # which is 
+                # which is
                 # dd/nn > a/b > d/n
                 assert(dd/nn > d/n)
                 for b in iter(NN):
@@ -843,7 +843,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
                     assert(a/b > d/n)
                     if dd/nn > a/b:
                         break
-                
+
             ret = self.domain()(numerator**a / denominator**b)
             assert(self(ret) > 0)
             assert(other(ret) < 0)
@@ -857,7 +857,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             ``other``.
 
             .. NOTE::
-            
+
                 Overriding this method tends to be a nuissance as you need to
                 handle all possible types (as in Python type) of valuations.
                 This is essentially the same problem that you have when
@@ -874,9 +874,16 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
                 2
 
             """
-            ret = self.uniformizer()
-            if self(ret) > other(ret):
-                return ret
+            # ret = self.uniformizer()
+            # if self(ret) > other(ret):
+            #     return ret
+            # raise NotImplementedError("weakly separating element for %r and %r"%(self, other))
+            f1 = self.uniformizer()
+            f2 = other.uniformizer()
+            test_elements = [f1, f2, f1/f2, f2/f1]
+            for f in test_elements:
+                if self(f) > other(f) and self(f) >= 0:
+                    return f
             raise NotImplementedError("weakly separating element for %r and %r"%(self, other))
 
         def shift(self, x, s):
@@ -1005,7 +1012,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             coefficients is going to lead to a significant shrinking of the
             coefficients of ``x``.
 
-            EXAMPLES:: 
+            EXAMPLES::
 
                 sage: sys.path.append(os.getcwd()); from mac_lane import * # optional: standalone
                 sage: v = pAdicValuation(Qp(2))
@@ -1299,7 +1306,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
 
             """
             tester = self._tester(**options)
-            
+
             if self.is_trivial() and not self.is_discrete_valuation():
                 # the trivial pseudo-valuation does not have a value semigroup
                 return
@@ -1319,7 +1326,7 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
 
             """
             tester = self._tester(**options)
-            
+
             if self.is_trivial() and not self.is_discrete_valuation():
                 # the trivial pseudo-valuation does not have a value semigroup
                 return
@@ -1600,7 +1607,7 @@ class ScaleAction(Action):
             sage: v = pAdicValuation(QQ, 5)
             sage: 3*v # indirect doctest
             3 * 5-adic valuation
-            
+
         """
         return v.scale(s)
 
@@ -1627,6 +1634,6 @@ class InverseScaleAction(Action):
             sage: v = pAdicValuation(QQ, 5)
             sage: v/3 # indirect doctest
             1/3 * 5-adic valuation
-            
+
         """
         return v.scale(1/s)

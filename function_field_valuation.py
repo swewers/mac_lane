@@ -394,7 +394,7 @@ class FunctionFieldValuationFactory(UniqueFactory):
                 # and easier pickling) we need to find a normal form of
                 # valuation, i.e., the smallest approximant that describes this
                 # valuation
-                approximants = vK.mac_lane_approximants(domain.polynomial())
+                approximants = vK.mac_lane_approximants(domain.polynomial(), require_incomparability=True)
                 approximant = vK.mac_lane_approximant(domain.polynomial(), valuation, approximants)
                 return (domain, approximant), {'approximants': approximants}
             else:
@@ -618,7 +618,7 @@ class DiscreteFunctionFieldValuation_base(DiscreteValuation):
                         if type(y_to_u) == RingHomomorphism_im_gens and type(u_to_y) == RingHomomorphism_im_gens:
                             return [FunctionFieldValuation(L, (w, L.hom([M(y_to_u(y_to_u.domain().gen()))]), M.hom([L(u_to_y(u_to_y.domain().gen()))]))) for w in H_extensions]
                         raise NotImplementedError
-                    # we fix a bug in the original version by adding the option require_incomparability=True    
+                    # we fix a bug in the original version by adding the option require_incomparability=True
                     return [FunctionFieldValuation(L, w) for w in self.mac_lane_approximants(L.polynomial(), require_incomparability=True)]
                 elif L.base() is not L and K.is_subring(L):
                     # recursively call this method for the tower of fields

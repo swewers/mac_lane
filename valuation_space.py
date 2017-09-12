@@ -470,6 +470,18 @@ class DiscretePseudoValuationSpace(UniqueRepresentation, Homset):
             exp = s/self.value_group().gen()
             if exp not in ZZ:
                 raise NotImplementedError("s must be a multiple of %r but %r is not"%(self.value_group().gen(), s))
+
+            # added by Stefan Wewers on 9-12-2017
+            # unfortunately this does not pick only the cases where we need this
+            # from sage.rings.function_field.function_field import is_RationalFunctionField
+            from mac_lane.function_field_valuation import NonClassicalRationalFunctionFieldValuation
+            if isinstance(self, NonClassicalRationalFunctionFieldValuation):
+                F = self.domain()
+                R = F._ring
+                v0 = self._base_valuation
+                if v0.domain() is R:
+                    return F(v0.element_with_valuation(s))
+
             ret = self.domain()(self.uniformizer() ** ZZ(exp))
             return self.simplify(ret, error=s)
 

@@ -1,5 +1,40 @@
+A modified version of the MCLF package
+---------------------------------------
+
+This is a small modification of the old standalone version of the `mac_lane`
+package. Its purpose is to be temporarily used in the `MCLF` package until
+there is a stable and integrated version of `mac_lane` in `Sage 8.1`. We have
+fixed some small bugs in order to make the MCLF code work.
+
+- when creating and extending discrete valuations on function fields, the
+  MacLane algorithm is invoked via the function ``mac_lane_approximants``.
+  We have added the parameter ``require_incomparability=True`` to this call.
+  This apparantly fixes a bug in the old version.
+- in `Sage` until 8.0 factorization of polynomials over the fraction field of a
+  polynomial ring is broken, due to problems with the interface to `Singular`.
+  This creates problems inside the MacLane algorithm when it is applied to
+  discrete non-classical valuations on function fields. To temporarily solve
+  this problem we have included a alternative handling of the factorization
+  method inside the function ``equivalence_decomposition``: if the polynomial to
+  be factored has coefficients in the fraction field of the polynomial ring,
+  the coefficients are coerced into a function field, then the polynomial is
+  factors, and finally the coefficients are coerced back into the original field.
+- a non-classical discrete valuations on a function field is internally realized
+  as an inductive valuation on the underlying polynomial ring. However, some
+  functions, in particular the function ``element_with_valuation`` is only
+  realized generically. If the base field is a number field, this sometimes leads
+  to a coefficient explosion which makes the code unusable in some examples.
+  To fix this, we have added to the generic realization of ``element_with_valuation``
+  a separated handling of the non-classical function field case where the
+  the function ``element_with_valuation`` is called from inside the base valuation
+  (which is an inductive valuation on a polynomial ring, and where this function
+  is realized in a much more clever way).
+  
+
 Mac Lane's Algorithms in Sage
 =============================
+
+
 This package implements most of Mac Lane's algorithms [1,2] and related
 structures to represent discrete valuations and discrete pseudo-valuations on
 rings in Sage.

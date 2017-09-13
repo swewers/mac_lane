@@ -1255,7 +1255,8 @@ class NonFinalInductiveValuation(FiniteInductiveValuation, DiscreteValuation):
             K1 = FunctionField(K.base_ring(), K.variable_name())
             factors = F.change_ring(K1).factor()
             to_K = lambda c: K(c.numerator())/K(c.denominator())
-            F = Factorization([(g.map_coefficients(to_K, K), m) for g, m in factors], to_K(factors.unit()), sort=False)
+            F = Factorization([(g.map_coefficients(to_K, K), m) for g, m in factors if not g.is_constant()], to_K(K1(factors.unit())), sort=False)
+            # the if clause is strange but necessary
         else:
             F = F.factor()
 
